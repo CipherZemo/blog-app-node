@@ -1,9 +1,86 @@
 <%- include("header", { title: "Home" }) %>
 
-<div class="text-center mt-5">
-    <h1>Welcome to the Prizmatic Blog</h1>
-    <p class="lead">Here you can make your thoughts and views <strong> public</strong>. Create account to start bloggin'.</p>  
-    <p class="lead">If you already a user then what's stopping you!</p>
+<!-- SEARCH -->
+<form class="mb-4" method="GET" action="/">
+  <div class="input-group">
+    <input
+      type="text"
+      name="search"
+      class="form-control"
+      placeholder="Search posts..."
+      value="<%= search %>"
+    />
+    <button class="btn btn-dark">Search</button>
+  </div>
+</form>
+
+<!-- POSTS -->
+<div class="row">
+  <% if (posts.length === 0) { %>
+    <p class="text-muted">No posts found.</p>
+  <% } %>
+
+  <% posts.forEach(post => { %>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+
+        <% if (post.image) { %>
+          <img
+            src="/uploads/<%= post.image %>"
+            class="card-img-top"
+            style="height:200px; object-fit:cover;"
+          />
+        <% } %>
+
+        <div class="card-body">
+          <h5 class="card-title"><%= post.title %></h5>
+
+          <p class="card-text">
+            <%= post.content.substring(0, 100) %>...
+          </p>
+
+          <a href="/posts/<%= post._id %>" class="btn btn-outline-dark btn-sm">
+            Read More
+          </a>
+        </div>
+      </div>
+    </div>
+  <% }) %>
 </div>
 
+<!-- PAGINATION -->
+<nav>
+  <ul class="pagination justify-content-center">
+
+    <% if (currentPage > 1) { %>
+      <li class="page-item">
+        <a class="page-link"
+           href="/?page=<%= currentPage - 1 %>&search=<%= search %>">
+          Prev
+        </a>
+      </li>
+    <% } %>
+
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+        <a class="page-link"
+           href="/?page=<%= i %>&search=<%= search %>">
+          <%= i %>
+        </a>
+      </li>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+      <li class="page-item">
+        <a class="page-link"
+           href="/?page=<%= currentPage + 1 %>&search=<%= search %>">
+          Next
+        </a>
+      </li>
+    <% } %>
+
+  </ul>
+</nav>
+
 <%- include("footer") %>
+
