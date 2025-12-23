@@ -1,0 +1,29 @@
+</div>
+
+<script>
+  const token = localStorage.getItem("token");
+  const nav = document.getElementById("nav-links");
+
+  if (!token) {
+    nav.innerHTML = `
+      <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
+      <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+    `;
+  } else {
+    nav.innerHTML = `
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="/create-post">Create Post</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">Logout</a></li>
+    `;
+  }
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "logoutBtn") {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+  });
+</script>
+
+</body>
+</html>
