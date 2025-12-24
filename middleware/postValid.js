@@ -3,7 +3,7 @@ exports.validatePost= (req, res, next)=>{
 
   if (!title || title.trim() === "") {
     return res.status(400).json({ message: "Title is required" });
-  }// trim() removes unwanted whitespace
+  }// trim() removes unwanted whitespaces
 
   if (!content || content.trim() === "") {
     return res.status(400).json({ message: "Content is required" });
