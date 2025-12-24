@@ -33,7 +33,7 @@ exports.getAllPosts = async (req, res) => {
     const search = req.query.search || "";// empty search retuns all
 
     const query = {
-      title: { $regex: search, $options: "i" }//Apply regex: search for substring match and option i is to be case-insensitive
+      title: { $regex: search, $options: "i" }//Apply regex: search for substring match and option i is to be case-insensitive in post titles
     };
 
     const totalPosts = await Post.countDocuments(query);// counts no of doc. for query
@@ -48,7 +48,7 @@ exports.getAllPosts = async (req, res) => {
       page,
       limit,
       totalPosts,
-      totalPages: Math.ceil(totalPosts / limit),// .ceil fn.
+      totalPages: Math.ceil(totalPosts / limit),// ceil fn. to round up
       posts
     });
 
@@ -163,8 +163,7 @@ exports.unlikePost = async (req, res) => {
 
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    post.likes = post.likes.filter(id => id.toString() !== req.user.id); // filter() creates new array that dont have req.user.id and toString() must be used bcuz mongo objId must be compared as strings
-
+    post.likes = post.likes.filter(id => id.toString() !== req.user.id); // filter() keeps only the elements that pass the condition & creates new array that dont have req.user.id and toString() must be used bcuz req.user.id is string
     await post.save();// updates no. of likes,timestamp etc.
 
     res.json({ message: "Post unliked" });
