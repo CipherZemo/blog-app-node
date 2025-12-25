@@ -62,7 +62,14 @@ exports.getAllPosts = async (req, res) => {
 exports.getPostById = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id)//id given in url/api
-      .populate("author", "name email");
+      .populate("author", "name")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+          select: "name"
+    }
+  });
 
     if (!post) return res.status(404).json({ message: "Post not found" });//if id valid but no post(maybe deleted manually from db)
 
@@ -136,37 +143,34 @@ exports.deletePost = async (req, res) => {
   }
 };
 
-exports.likePost = async (req, res) => {
+exports.toggleLike = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-    if (post.likes.includes(req.user.id)) {
-      return res.status(400).json({ message: "Already liked" });
-    }//includes() makes sure no infinite likes in like array(likes is given as array in schema)
+    const userId = req.user.id;
 
-    post.likes.push(req.user.id);// push() adds u_id in array. but if you want username in likes array fetch using populate -> Post.find().populate("likes", "name email");
+    const alreadyLiked = post.likes.includes(userId);
+
+    if (alreadyLiked) {
+      // UNLIKE
+      post.likes = post.likes.filter(
+        id => id.toString() !== userId
+      );
+    } else {
+      // LIKE
+      post.likes.push(userId);
+    }
 
     await post.save();
 
-    res.json({ message: "Post liked" });
-
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-exports.unlikePost = async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-
-    if (!post) return res.status(404).json({ message: "Post not found" });
-
-    post.likes = post.likes.filter(id => id.toString() !== req.user.id); // filter() keeps only the elements that pass the condition & creates new array that dont have req.user.id and toString() must be used bcuz req.user.id is string
-    await post.save();// updates no. of likes,timestamp etc.
-
-    res.json({ message: "Post unliked" });
+    res.status(200).json({
+      likes: post.likes.length,
+      liked: !alreadyLiked
+    });
 
   } catch (err) {
     res.status(500).json({ message: err.message });
