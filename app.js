@@ -34,7 +34,6 @@ app.use("/", authPageRoutes);
 
 
 
-
 const authMiddleware = require("./middleware/authMiddleware");
 app.get("/api/protected", authMiddleware, (req, res) => {
   res.json({ message: "You are authorized", user: req.user });
