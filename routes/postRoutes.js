@@ -7,7 +7,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/roleMiddleware");
 
 const {
-  createPost,getAllPosts,getPostById,updatePost,deletePost,likePost,unlikePost,addComment,deleteComment
+  createPost,getAllPosts,getPostById,updatePost,deletePost,toggleLike,addComment,deleteComment
 } = require("../controllers/postController"); // 
 
 const { validatePost } = require("../middleware/postValid");
@@ -21,8 +21,8 @@ router.put("/:id", authMiddleware, upload.single("image"),validatePost, updatePo
 router.delete("/:id", authMiddleware, deletePost);
 
 // Likes
-router.post("/:id/like", authMiddleware, likePost);
-router.post("/:id/unlike", authMiddleware, unlikePost);
+router.post("/:id/like", authMiddleware, toggleLike);
+
 
 // Comments
 router.post("/:id/comment", authMiddleware, addComment);
