@@ -8,7 +8,7 @@ const API_BASE = "http://localhost:3000/api/auth";
 router.post("/signup", async (req, res) => {
   try {
     await axios.post(`${API_BASE}/signup`, req.body);
-    res.redirect("/login");
+    res.redirect("/login?success=1");
   } catch (err) {
     const error =
       err.response?.data?.message || "Signup failed";
