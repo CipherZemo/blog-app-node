@@ -1,5 +1,5 @@
 const express = require("express");
-const axios = require("axios");
+const axios = require("axios");//Axios is a promise-based HTTP client for both Node.js and browsers, designed to simplify making HTTP requests
 const router = express.Router();
 
 const API_BASE = "http://localhost:3000/api";
@@ -36,8 +36,26 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/posts/:id", async (req, res) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE}/posts/${req.params.id}`
+    );
+
+    res.render("singlePost", {
+      title: response.data.title,
+      post: response.data,
+      likes: response.data.likes
+    });
+
+  } catch (err) {
+    res.redirect("/");
+  }
+});
+
+
 router.get("/login", (req, res) => {
-    res.render("login", { title: "Login", error: null });
+    res.render("login", { title: "Login", error: null,success: req.query.success });
 });
 
 router.get("/signup", (req, res) => {
