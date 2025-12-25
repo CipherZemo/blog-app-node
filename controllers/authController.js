@@ -37,6 +37,7 @@ exports.signup = async (req, res) => {//export is used to export this fn as a fi
 };//sign up function
 
 
+
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
