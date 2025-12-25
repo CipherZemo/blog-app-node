@@ -28,13 +28,13 @@ exports.signup = async (req, res) => {//export is used to export this fn as a fi
     res.status(201).json({ 
       message: "User registered successfully", 
       user: newUser
-    });//instead of newUser you can pass a different user model to json file that doesnt show password for more protection, just create a new vari using const 
+    });//instead of newUser you can pass a different user model to json file that doesnt show password for more protection, just create a new vari using const
+
 
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };//sign up function
-
 
 
 exports.login = async (req, res) => {
