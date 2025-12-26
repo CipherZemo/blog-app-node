@@ -4,6 +4,14 @@ const router = express.Router();
 
 const API_BASE = "http://localhost:3000/api";
 
+router.get("/login", (req, res) => {
+    res.render("login", { title: "Login", error: null,success: req.query.success });
+});
+
+router.get("/signup", (req, res) => {
+    res.render("signup", { title: "Signup", error: null });
+});
+
 router.get("/", async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -53,14 +61,26 @@ router.get("/posts/:id", async (req, res) => {
   }
 });
 
-
-router.get("/login", (req, res) => {
-    res.render("login", { title: "Login", error: null,success: req.query.success });
+router.get("/create-post", (req, res) => {
+  res.render("createPost", { title: "Create Post" });
 });
 
-router.get("/signup", (req, res) => {
-    res.render("signup", { title: "Signup", error: null });
+router.get("/posts/:id/edit", async (req, res) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:3000/api/posts/${req.params.id}`
+    );
+
+    res.render("editPost", {
+      title: "Edit Post",
+      post: response.data
+    });
+
+  } catch (err) {
+    res.redirect("/");
+  }
 });
+
 
 module.exports = router;
 
