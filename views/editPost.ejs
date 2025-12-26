@@ -1,0 +1,91 @@
+<%- include("header", { title: "Edit Post" }) %>
+
+<div class="row justify-content-center">
+  <div class="col-md-8">
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h3>Edit Post</h3>
+
+        <form id="editForm" enctype="multipart/form-data">
+
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input
+              type="text"
+              name="title"
+              class="form-control"
+              value="<%= post.title %>"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Content</label>
+            <textarea
+              name="content"
+              class="form-control"
+              rows="6"
+              required
+            ><%= post.content %></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Replace Image (optional)</label>
+            <input type="file" name="image" class="form-control" />
+          </div>
+
+          <button class="btn btn-dark">Update</button>
+          <button
+            type="button"
+            class="btn btn-secondary ms-2"
+            onclick="goBack()"
+          >
+            Cancel
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById("editForm");
+  const token = localStorage.getItem("token");
+  const postId = "<%= post._id %>";
+
+  function goBack() {
+    window.history.back();
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!token) {
+      alert("Login required");
+      return;
+    }
+
+    const formData = new FormData(form);
+
+    const res = await fetch(`/api/posts/${postId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    });
+
+    if (res.ok) {
+      window.location.href = `/posts/${postId}`;
+    } else {
+      alert("Failed to update post");
+    }
+  });
+  
+</script>
+
+<%- include("footer") %>
