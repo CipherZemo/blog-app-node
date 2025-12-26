@@ -20,6 +20,7 @@
   document.addEventListener("click", (e) => {
     if (e.target.id === "logoutBtn") {
       localStorage.removeItem("token");
+      alert("You have successfully logged out!");
       window.location.href = "/login";
     }
   });
