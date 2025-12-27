@@ -26,6 +26,9 @@ app.use("/api/auth", authRoutes);
 const postRoutes = require("./routes/postRoutes");
 app.use("/api/posts", postRoutes);
 
+const adminRoutes = require("./routes/adminRoutes");
+app.use("/api/admin", adminRoutes);
+
 const pageRoutes = require("./routes/pageRoutes");
 app.use("/", pageRoutes);
 
@@ -34,17 +37,18 @@ app.use("/", authPageRoutes);
 
 
 
+
+
 const authMiddleware = require("./middleware/authMiddleware");
 app.get("/api/protected", authMiddleware, (req, res) => {
   res.json({ message: "You are authorized", user: req.user });
 });//protected route
 
+
 const  {authorizeRoles}  = require("./middleware/roleMiddleware");
 app.get("/api/admin/test", authMiddleware, authorizeRoles("admin"),  (req, res) => {
     res.json({ message: "Admin route OK" });
 });// admin test route
-
-
 
 // Start Server
 const PORT = process.env.PORT || 3000;
