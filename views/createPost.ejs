@@ -50,6 +50,14 @@
 </div>
 
 <script>
+    
+    function requireAuth() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+    }
+  }
+  requireAuth();
 
   function goBack() {
     window.history.back();
@@ -63,6 +71,7 @@
 
     if (!token) {
       alert("Login required");
+      window.location.href = "/login";
       return;
     }
 
@@ -77,6 +86,7 @@
     });
 
     if (res.ok) {
+      alert("Post created!");
       window.location.href = "/";
     } else {
       const data = await res.json();
