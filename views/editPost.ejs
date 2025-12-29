@@ -66,6 +66,7 @@
 
     if (!token) {
       alert("Login required");
+      window.location.href = "/login";
       return;
     }
 
@@ -80,6 +81,7 @@
     });
 
     if (res.ok) {
+      alert("Post has been edited!")
       window.location.href = `/posts/${postId}`;
     } else {
       alert("Failed to update post");
