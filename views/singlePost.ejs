@@ -1,7 +1,7 @@
 <%- include("header", { title: post.title }) %>
 
 <div class="mb-3">
-  <button class="btn btn-link fs-5 text-dark text-decoration-none" onclick="goBack()"><strong> &#8676; Back</strong></button>
+  <button class="btn btn-link fs-5 text-dark text-decoration-none" onclick="goHome()"><strong> &#8676; Back</strong></button>
 </div>
 
 <div class="row">
@@ -100,19 +100,18 @@
 </div>
 
 <script>
+
+    function goHome() {
+    window.location.href="/";
+  }
+
   const postId = "<%= post._id %>";
   const token = localStorage.getItem("token");
 
-  // ---- HELPERS ----
-  function getUserFromToken() {
+    function getUserFromToken() {
     if (!token) return null;
     return JSON.parse(atob(token.split(".")[1]));
   }
-
-  function goBack() {
-    window.history.back();
-  }
-
   const user = getUserFromToken();
   const currentUserId = user?.id;
   const isAdmin = user?.role === "admin";
@@ -130,6 +129,7 @@
   likeBtn.addEventListener("click", async () => {
     if (!token) {
       alert("Login required");
+      window.location.href = "/login";
       return;
     }
 
@@ -147,6 +147,7 @@
   async function addComment() {
     if (!token) {
       alert("Login required");
+      window.location.href = "/login";
       return;
     }
 
@@ -198,7 +199,9 @@ if (
 
 //------------Delete Post------------
 async function deletePost() {
-  if (!token) return;
+  if (!token){
+    window.location.href = "/login";
+  };
 
   const confirmDelete = confirm(
     "Are you sure you want to delete this post?"
@@ -214,9 +217,10 @@ async function deletePost() {
   });
 
   if (res.ok) {
+    alert("Post deleted Successfully!");
     window.location.href = "/";
   } else {
-    alert("Failed to delete post");
+    alert("Failed to delete post!");
   }
 } 
 
