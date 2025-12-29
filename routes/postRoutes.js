@@ -4,8 +4,6 @@ const router = express.Router();
 const upload = require("../middleware/upload");
 const authMiddleware = require("../middleware/authMiddleware");
 
-const { authorizeRoles } = require("../middleware/roleMiddleware");
-
 const {
   createPost,getAllPosts,getPostById,updatePost,deletePost,toggleLike,addComment,deleteComment
 } = require("../controllers/postController"); // 
