@@ -5,7 +5,7 @@ const router = express.Router();
 const API_BASE = "http://localhost:3000/api";
 
 router.get("/login", (req, res) => {
-    res.render("login", { title: "Login", error: null,success: req.query.success });
+    res.render("login", { title: "Login", error: null, success: req.query.success });
 });
 
 router.get("/signup", (req, res) => {
@@ -80,6 +80,11 @@ router.get("/posts/:id/edit", async (req, res) => {
     res.redirect("/");
   }
 });
+
+router.get("/admin", (req, res) => {
+  res.render("admin", { title: "Admin Dashboard" });
+});
+
 
 
 module.exports = router;
