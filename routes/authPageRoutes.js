@@ -24,13 +24,17 @@ router.post("/login", async (req, res) => {
       req.body
     );
 
-    const token = response.data.token;
+    const { token,user } = response.data;
 
     // store token in localStorage via script
     res.send(`
       <script>
         localStorage.setItem("token", "${token}");
-        window.location.href = "/";
+        if ("${user.role}" === "admin") {
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/";
+        }
       </script>
     `);
   } catch (err) {
