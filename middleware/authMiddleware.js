@@ -9,7 +9,6 @@ module.exports = (req, res, next) => {//A middleware must be a function with thr
   }
 
   const token = authHeader.split(" ")[1];//second part is the actual JWT token, so split the string by space and take the second part
-
   try {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
