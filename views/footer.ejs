@@ -1,7 +1,13 @@
 </div>
 
 <script>
+
   const token = localStorage.getItem("token");
+  function getUserFromToken() {
+    if (!token) return null;
+    return JSON.parse(atob(token.split(".")[1]));
+  }
+  const user= getUserFromToken();
   const nav = document.getElementById("nav-links");
 
   if (!token) {
@@ -9,14 +15,22 @@
       <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
       <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
     `;
-  } else {
+  }else if(user.role=="admin"){
+    nav.innerHTML = `
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="/admin">Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="/create-post">Create Post</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">Logout</a></li>
+    `;
+  }
+  else {
     nav.innerHTML = `
       <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
       <li class="nav-item"><a class="nav-link" href="/create-post">Create Post</a></li>
       <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">Logout</a></li>
     `;
   }
-
+  
   document.addEventListener("click", (e) => {
     if (e.target.id === "logoutBtn") {
       localStorage.removeItem("token");
@@ -24,6 +38,7 @@
       window.location.href = "/login";
     }
   });
+  
 </script>
 
 </body>
