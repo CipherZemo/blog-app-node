@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {//A middleware must be a function with three arguments: req, res, next
-  
+
   const authHeader = req.headers.authorization;// Get token from header. When the frontend sends a protected request, it includes a header like Authorization: Bearer YOUR_TOKEN_HERE
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
