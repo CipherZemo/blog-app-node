@@ -1,23 +1,12 @@
 <%- include("header", { title: "Admin Dashboard" }) %>
 
-<script>
-function getToken() {
-    return localStorage.getItem("token");
-  }
-const user = getToken();
-  if (!user || user.role !== "admin") {
-    window.location.href = "/";
-    alert("You are not admin!");
-  }
-</script>
-
 <div class="container mt-4">
 
   <!-- ================= ADMIN HEADER ================= -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold">Admin Dashboard</h2>
     <a href="/" class="btn btn-outline-secondary btn-sm">
-      ← Back to Home
+      ← Go to Posts
     </a>
   </div>
 
@@ -77,10 +66,30 @@ const user = getToken();
 </div>
 
 <script>
+
+const token=localStorage.getItem("token");
+function getUserFromToken() {
+    if (!token) return null;
+    return JSON.parse(atob(token.split(".")[1]));
+  }
+const user = getUserFromToken();
+  if (!user || user.role !== "admin") {
+    window.location.href = "/";
+    alert("You are not admin!");
+  }
+
+  const nav = document.getElementById("nav-links");
+  if(user.role=="admin"){
+    nav.innerHTML = `
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="/create-post">Create Post</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">Logout</a></li>
+    `;
+  }
   // ---------- LOAD STATS ----------
   async function loadStats() {
     const res = await fetch("/api/admin/stats", {
-      headers: { Authorization: `Bearer ${getToken()}` }
+      headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
     document.getElementById("userCount").innerText = data.users;
@@ -90,7 +99,7 @@ const user = getToken();
   // ---------- LOAD USERS ----------
   async function loadUsers() {
     const res = await fetch("/api/admin/users", {
-      headers: { Authorization: `Bearer ${getToken()}` }
+      headers: { Authorization: `Bearer ${token}` }
     });
     const users = await res.json();
     const tbody = document.getElementById("usersTable");
@@ -126,7 +135,7 @@ const user = getToken();
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({ role })
     });
@@ -149,7 +158,7 @@ const user = getToken();
   // ---------- LOAD POSTS (PAGINATION ONLY) ----------
   async function loadPosts(page = 1) {
     const res = await fetch(`/api/admin/posts?page=${page}`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     const data = await res.json();
