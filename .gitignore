@@ -1,3 +1,4 @@
 .env
 uploads/
-views/nodmin.ejs
+#no need of ! at begining for views
+#views/nodmin.ejs 
