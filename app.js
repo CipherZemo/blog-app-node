@@ -14,7 +14,7 @@ app.use(cors());
 
 
 app.set("view engine", "ejs");// enable EJS
-app.use(express.urlencoded({extended: true}));//enabling form handling
+app.use(express.urlencoded({ extended: true }));//enabling form handling
 app.use(express.static("public"));//
 app.use("/uploads", express.static("uploads"));//make folder static so images can be served
 
@@ -44,3 +44,4 @@ connectDB().then(() => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 });
+
