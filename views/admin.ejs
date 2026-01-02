@@ -1,112 +1,112 @@
 <%- include("header", { title: "Admin Dashboard" }) %>
 
-<div class="container mt-4">
+  <div class="container mt-4">
 
-  <!-- ================= ADMIN HEADER ================= -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold">Admin Dashboard</h2>
-    <a href="/" class="btn btn-outline-secondary btn-sm">
-      ← Go to Posts
-    </a>
-  </div>
+    <!-- ================= ADMIN HEADER ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold">Admin Dashboard</h2>
+      <a href="/" class="btn btn-outline-secondary btn-sm">
+        ← Go to Posts
+      </a>
+    </div>
 
-  <hr />
+    <hr />
 
-  <!-- ================= STATS ================= -->
-  <div class="row text-center mb-5">
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h6 class="text-muted">Total Users</h6>
-          <h3 id="userCount" class="fw-bold">0</h3>
+    <!-- ================= STATS ================= -->
+    <div class="row text-center mb-5">
+      <div class="col-md-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h6 class="text-muted">Total Users</h6>
+            <h3 id="userCount" class="fw-bold">0</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h6 class="text-muted">Total Posts</h6>
+            <h3 id="postCount" class="fw-bold">0</h3>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h6 class="text-muted">Total Posts</h6>
-          <h3 id="postCount" class="fw-bold">0</h3>
-        </div>
+    <!-- ================= USER MANAGEMENT ================= -->
+    <section class="mb-5">
+      <h4 class="mb-3">User Management</h4>
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th style="width: 140px;">Role</th>
+              <th style="width: 120px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable"></tbody>
+        </table>
       </div>
-    </div>
+    </section>
+
+    <!-- ================= POSTS ================= -->
+    <section>
+      <h4 class="mb-3">Posts</h4>
+
+      <div id="adminPosts"></div>
+
+      <nav class="mt-3">
+        <ul class="pagination justify-content-center" id="postPagination"></ul>
+      </nav>
+    </section>
+
   </div>
 
-  <!-- ================= USER MANAGEMENT ================= -->
-  <section class="mb-5">
-    <h4 class="mb-3">User Management</h4>
+  <script>
 
-    <div class="table-responsive">
-      <table class="table table-bordered align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th style="width: 140px;">Role</th>
-            <th style="width: 120px;">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="usersTable"></tbody>
-      </table>
-    </div>
-  </section>
+    const token = localStorage.getItem("token");
+    function getUserFromToken() {
+      if (!token) return null;
+      return JSON.parse(atob(token.split(".")[1]));
+    }
+    const user = getUserFromToken();
+    if (!user || user.role !== "admin") {
+      window.location.href = "/";
+      alert("You are not admin!");
+    }
 
-  <!-- ================= POSTS ================= -->
-  <section>
-    <h4 class="mb-3">Posts</h4>
-
-    <div id="adminPosts"></div>
-
-    <nav class="mt-3">
-      <ul class="pagination justify-content-center" id="postPagination"></ul>
-    </nav>
-  </section>
-
-</div>
-
-<script>
-
-const token=localStorage.getItem("token");
-function getUserFromToken() {
-    if (!token) return null;
-    return JSON.parse(atob(token.split(".")[1]));
-  }
-const user = getUserFromToken();
-  if (!user || user.role !== "admin") {
-    window.location.href = "/";
-    alert("You are not admin!");
-  }
-
-  const nav = document.getElementById("nav-links");
-  if(user.role=="admin"){
-    nav.innerHTML = `
+    const dnav = document.getElementById("nav-links");
+    if (user.role == "admin") {
+      dnav.innerHTML = `
       <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
       <li class="nav-item"><a class="nav-link" href="/create-post">Create Post</a></li>
       <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">Logout</a></li>
     `;
-  }
-  // ---------- LOAD STATS ----------
-  async function loadStats() {
-    const res = await fetch("/api/admin/stats", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await res.json();
-    document.getElementById("userCount").innerText = data.users;
-    document.getElementById("postCount").innerText = data.posts;
-  }
+    }
+    // ---------- LOAD STATS ----------
+    async function loadStats() {
+      const res = await fetch("/api/admin/stats", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      document.getElementById("userCount").innerText = data.users;
+      document.getElementById("postCount").innerText = data.posts;
+    }
 
-  // ---------- LOAD USERS ----------
-  async function loadUsers() {
-    const res = await fetch("/api/admin/users", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const users = await res.json();
-    const tbody = document.getElementById("usersTable");
-    tbody.innerHTML = "";
+    // ---------- LOAD USERS ----------
+    async function loadUsers() {
+      const res = await fetch("/api/admin/users", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const users = await res.json();
+      const tbody = document.getElementById("usersTable");
+      tbody.innerHTML = "";
 
-    users.forEach(u => {
-      tbody.innerHTML += `
+      users.forEach(u => {
+        tbody.innerHTML += `
         <tr>
           <td class="fw-semibold">${u.name}</td>
           <td class="text-muted">${u.email}</td>
@@ -125,48 +125,48 @@ const user = getUserFromToken();
           </td>
         </tr>
       `;
-    });
-  }
+      });
+    }
+//----------Change Roles & Delete users----------------
+    async function changeRole(id, role) {
+      if (!confirm("Change role for this user?")) return;
 
-  async function changeRole(id, role) {
-    if (!confirm("Change role for this user?")) return;
+      await fetch(`/api/admin/users/${id}/role`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ role })
+      });
 
-    await fetch(`/api/admin/users/${id}/role`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ role })
-    });
+      loadUsers();
+    }
 
-    loadUsers();
-  }
+    async function deleteUser(id) {
+      if (!confirm("Delete this user?")) return;
 
-  async function deleteUser(id) {
-    if (!confirm("Delete this user?")) return;
+      await fetch(`/api/admin/users/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-    await fetch(`/api/admin/users/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
+      loadUsers();
+      loadStats();
+    }
 
-    loadUsers();
-    loadStats();
-  }
+    // ---------- LOAD POSTS (PAGINATION ONLY) ----------
+    async function loadPosts(page = 1) {
+      const res = await fetch(`/api/admin/posts?page=${page}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-  // ---------- LOAD POSTS (PAGINATION ONLY) ----------
-  async function loadPosts(page = 1) {
-    const res = await fetch(`/api/admin/posts?page=${page}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+      const data = await res.json();
+      const container = document.getElementById("adminPosts");
+      container.innerHTML = "";
 
-    const data = await res.json();
-    const container = document.getElementById("adminPosts");
-    container.innerHTML = "";
-
-    data.posts.forEach(p => {
-      container.innerHTML += `
+      data.posts.forEach(p => {
+        container.innerHTML += `
         <div class="card mb-2 shadow-sm">
           <div class="card-body py-2">
             <strong>${p.title}</strong>
@@ -177,24 +177,24 @@ const user = getUserFromToken();
           </div>
         </div>
       `;
-    });
+      });
 
-    const pagination = document.getElementById("postPagination");
-    pagination.innerHTML = "";
+      const pagination = document.getElementById("postPagination");
+      pagination.innerHTML = "";
 
-    for (let i = 1; i <= data.totalPages; i++) {
-      pagination.innerHTML += `
+      for (let i = 1; i <= data.totalPages; i++) {
+        pagination.innerHTML += `
         <li class="page-item ${i === page ? "active" : ""}">
           <a class="page-link" onclick="loadPosts(${i})">${i}</a>
         </li>
       `;
+      }
     }
-  }
 
-  // ---------- INIT ----------
-  loadStats();
-  loadUsers();
-  loadPosts();
-</script>
+    // ---------- INIT ----------
+    loadStats();
+    loadUsers();
+    loadPosts();
+  </script>
 
-<%- include("footer") %>
+  <%- include("footer") %>
