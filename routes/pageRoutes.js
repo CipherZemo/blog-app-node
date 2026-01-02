@@ -9,7 +9,7 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/signup", (req, res) => {
-    res.render("signup", { title: "Signup", error: null });
+    res.render("signup", { title: "Signup", error: null, success: null });
 });
 
 router.get("/", async (req, res) => {
@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
     const response = await axios.get(`${API_BASE}/posts`, {
       params: {
         page,
-        limit: 5,
+        limit: 9,
         search
       }
     });
