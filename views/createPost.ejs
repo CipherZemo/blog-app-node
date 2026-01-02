@@ -1,105 +1,92 @@
 <%- include("header", { title: "Create Post" }) %>
 
-<div class="mb-3">
-  <button class="btn btn-link fs-5 text-dark text-decoration-none" onclick="goHome()"><strong> &#8676; Back</strong></button>
-</div>
-
-<div class="row justify-content-center">
-  <div class="col-md-8">
-
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h3 class="mb-3">Create New Post</h3>
-
-        <form id="postForm" enctype="multipart/form-data">
-
-          <div class="mb-3">
-            <label class="form-label">Title</label>
-            <input
-              type="text"
-              name="title"
-              class="form-control"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Content</label>
-            <textarea
-              name="content"
-              class="form-control"
-              rows="6"
-              required
-            ></textarea>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Image (optional)</label>
-            <input
-              type="file"
-              name="image"
-              class="form-control"
-            />
-          </div>
-
-          <button class="btn btn-dark">Publish</button>
-          <button type="button" class="btn btn-danger ms-2" onclick="goBack()">Cancel</button>
-
-        </form>
-
-      </div>
-    </div>
-
+  <div class="mb-3">
+    <button class="btn btn-link fs-5 text-dark text-decoration-none" onclick="goHome()"><strong> &#8676;
+        Back</strong></button>
   </div>
-</div>
 
-<script>
-    
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="mb-3">Create New Post</h3>
+
+          <form id="postForm" enctype="multipart/form-data">
+
+            <div class="mb-3">
+              <label class="form-label">Title</label>
+              <input type="text" name="title" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Content</label>
+              <textarea name="content" class="form-control" rows="6" required></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Image ( JPG/JPEG/PNG only)</label>
+              <input type="file" name="image" class="form-control" accept=".JPG, .PNG, .JPEG "/>
+            </div>
+
+            <button class="btn btn-dark">Publish</button>
+            <button type="button" class="btn btn-danger ms-2" onclick="goBack()">Cancel</button>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+
     function requireAuth() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/login";
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/login";
+      }
     }
-  }
-  requireAuth();
+    requireAuth();
 
-  function goHome() {
-    window.location.href="/";
-  }
-  function goBack() {
-    window.history.back();
-  }
-
-  const form = document.getElementById("postForm");
-  const token = localStorage.getItem("token");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    if (!token) {
-      alert("Login required");
-      window.location.href = "/login";
-      return;
-    }
-
-    const formData = new FormData(form);
-
-    const res = await fetch("/api/posts", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      body: formData
-    });
-
-    if (res.ok) {
-      alert("Post created!");
+    function goHome() {
       window.location.href = "/";
-    } else {
-      const data = await res.json();
-      alert(data.message || "Failed to create post");
     }
-  });
-</script>
+    function goBack() {
+      window.history.back();
+    }
 
-<%- include("footer") %>
+    const form = document.getElementById("postForm");
+    const token = localStorage.getItem("token");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!token) {
+        alert("Login required");
+        window.location.href = "/login";
+        return;
+      }
+
+      const formData = new FormData(form);
+
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (res.ok) {
+        window.location.href = "/";
+        alert("Post created!");
+      } else {
+        const data = await res.json();
+        alert(data.message,"Failed to create post");
+      }
+    });
+  </script>
+
+  <%- include("footer") %>
