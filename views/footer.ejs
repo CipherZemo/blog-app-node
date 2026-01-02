@@ -2,26 +2,31 @@
 
 <script>
 
-  const token = localStorage.getItem("token");
-  function getUserFromToken() {
-    if (!token) return null;
-    return JSON.parse(atob(token.split(".")[1]));
+  const atoken = localStorage.getItem("token");
+  function getUser() {
+    try {
+      if (!atoken) return null;
+      return JSON.parse(atob(atoken.split(".")[1]));
+    } catch {
+      return null;
+    }
   }
-  const user= getUserFromToken();
+  const login= getUser();
   const nav = document.getElementById("nav-links");
 
-  if (!token) {
+  if (!atoken) {
     nav.innerHTML = `
       <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
       <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
     `;
-  }else if(user.role=="admin"){
+  } 
+  else if(login.role=="admin"){
     nav.innerHTML = `
       <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
       <li class="nav-item"><a class="nav-link" href="/admin">Dashboard</a></li>
       <li class="nav-item"><a class="nav-link" href="/create-post">Create Post</a></li>
       <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">Logout</a></li>
-    `;
+    `;  
   }
   else {
     nav.innerHTML = `
@@ -30,7 +35,7 @@
       <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">Logout</a></li>
     `;
   }
-  
+
   document.addEventListener("click", (e) => {
     if (e.target.id === "logoutBtn") {
       localStorage.removeItem("token");
@@ -38,8 +43,9 @@
       window.location.href = "/login";
     }
   });
-  
+
 </script>
 
 </body>
+
 </html>
