@@ -1,4 +1,4 @@
-exports.validatePost= (req, res, next)=>{
+exports.validatePost = (req, res, next) => {
   const { title, content } = req.body;
 
   if (!title || title.trim() === "") {
