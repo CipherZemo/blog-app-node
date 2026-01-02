@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
   },
   // error first fn. where 1st arg is for error, set to null in case of no error 
   filename: (req, file, cb) => {
-    const unique = Date.now() + "-" + Math.round(Math.random()*1e9);//.random() generates a random  float no. btw 0-1
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);//.random() generates a random  float no. btw 0-1
     cb(null, unique + path.extname(file.originalname));// path.extname extracts the original file's extension
   }
 });
