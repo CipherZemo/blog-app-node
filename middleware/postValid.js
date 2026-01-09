@@ -11,4 +11,3 @@ exports.validatePost = (req, res, next) => {
 
   next();
 }
-// no module is exported so add {} to the variable which needs the function
