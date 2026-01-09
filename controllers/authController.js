@@ -2,8 +2,8 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-
-exports.signup = async (req, res) => {//export is used to export this fn as a file to others, that is this signup fn can be shared if someone req or need for processing (path should be this page ie, in require("../controller/authControl.js"))
+//sign up function
+exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -28,16 +28,16 @@ exports.signup = async (req, res) => {//export is used to export this fn as a fi
     res.status(201).json({ 
       message: "User registered successfully", 
       user: newUser
-    });//instead of newUser you can pass a different user model to json file that doesnt show password for more protection, just create a new vari using const
+    });
 
 
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-};//sign up function
+};
 
 
-
+// login function
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -75,5 +75,5 @@ exports.login = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-};// login function
+};
 
